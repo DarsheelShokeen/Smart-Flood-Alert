@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Flood Alert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+
+    <!-- ═══ Navigation ═══ -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-left">
+                <a href="../projects.html" class="pill" style="display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; margin-right:0.75rem; font-weight:500; font-size:0.8rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Portfolio
+                </a>
+                <div class="nav-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                </div>
+                <div class="nav-titles">
+                    <span class="nav-brand">Smart Flood Alert</span>
+                    <span class="nav-sub">IoT Model City</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div id="connection-status" class="pill conn offline">
+                    <span class="pulse-dot"></span>
+                    <span id="connection-text">Connecting</span>
+                </div>
+                <span id="clock" class="pill clock-pill">--:--</span>
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+                    <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                    <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+
+        <!-- ═══ Row 1: Status Banner ═══ -->
+        <section id="status-hero" class="card hero hero-normal">
+            <div class="hero-left">
+                <div class="hero-ring" id="hero-icon">
+                    <svg id="icon-normal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <svg id="icon-flood" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="status-text">System Normal</h1>
+                    <p id="status-sub" class="hero-desc">All water levels within safe parameters. Alert dispatch armed.</p>
+                </div>
+            </div>
+            <div class="hero-chips">
+                <div class="chip"><span class="chip-label">Flood</span><span class="chip-val chip-red">≥ 75%</span></div>
+                <div class="chip"><span class="chip-label">Reset</span><span class="chip-val chip-green">≤ 40%</span></div>
+            </div>
+        </section>
+
+        <!-- ═══ Row 2: Main Dashboard Grid ═══ -->
+        <div class="grid-main">
+
+            <!-- Left: Water Level Gauge -->
+            <div class="card gauge-card">
+                <div class="card-head">
+                    <span class="card-eyebrow">Water Level</span>
+                    <span id="level-badge" class="tag tag-safe">Safe</span>
+                </div>
+                <div class="gauge-center">
+                    <div class="gauge-big-num">
+                        <span id="water-level-number">0</span><span class="gauge-unit">%</span>
+                    </div>
+                </div>
+                <div class="gauge-bar-wrap">
+                    <div class="gauge-bar">
+                        <div id="water-fill" class="gauge-fill" style="width:0%">
+                            <div class="fill-shimmer"></div>
+                        </div>
+                        <div class="bar-mark mark-reset" style="left:40%"></div>
+                        <div class="bar-mark mark-flood" style="left:75%"></div>
+                    </div>
+                    <div class="bar-legend">
+                        <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: 2x2 Metric Cards -->
+            <div class="metrics-2x2">
+                <div class="card metric-card">
+                    <div class="m-icon m-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+                    <div class="m-body">
+                        <span class="m-label">ESP32 Device</span>
+                        <span id="esp32-status" class="m-value val-off">Offline</span>
+                        <span id="esp32-last-seen" class="m-detail">Awaiting connection</span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <div class="m-icon m-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+                    <div class="m-body">
+                        <span class="m-label">Local Alarm</span>
+                        <span id="alarm-state" class="m-value">Inactive</span>
+                        <span class="m-detail">Buzzer + LED circuit</span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <div class="m-icon m-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
+                    <div class="m-body">
+                        <span class="m-label">WhatsApp API</span>
+                        <span id="whatsapp-status" class="m-value">Not Configured</span>
+                        <span id="demo-mode" class="m-detail"></span>
+                    </div>
+                </div>
+                <div class="card metric-card">
+                    <div class="m-icon m-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                    <div class="m-body">
+                        <span class="m-label">Alerts Dispatched</span>
+                        <span id="total-alerts" class="m-value m-accent">0</span>
+                        <span class="m-detail">Anti-spam filtered</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Row 3: Timeline + Controls ═══ -->
+        <div class="grid-bottom">
+
+            <!-- Timeline & History -->
+            <div class="card timeline-card">
+                <div class="card-head">
+                    <span class="card-eyebrow">Activity</span>
+                </div>
+                <div class="tl-rows">
+                    <div class="tl-row">
+                        <span class="tl-dot dot-red"></span>
+                        <div class="tl-text">
+                            <span class="tl-label">Last Flood</span>
+                            <span id="last-flood" class="tl-time">Never</span>
+                        </div>
+                    </div>
+                    <div class="tl-row">
+                        <span class="tl-dot dot-amber"></span>
+                        <div class="tl-text">
+                            <span class="tl-label">Last WhatsApp Alert</span>
+                            <span id="last-whatsapp" class="tl-time">Never</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-head" style="margin-top:1.25rem">
+                    <span class="card-eyebrow">Alert History</span>
+                </div>
+                <div id="alert-history" class="history-list">
+                    <p class="empty-msg">No alerts recorded yet.</p>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="card controls-card">
+                <div class="card-head">
+                    <span class="card-eyebrow">Demo Controls</span>
+                    <span id="sim-status-label" class="tag tag-subtle">Ready</span>
+                </div>
+
+                <!-- Pour / Drain -->
+                <div class="ctrl-group">
+                    <span class="ctrl-title">Bottle Simulation</span>
+                    <div class="btn-row">
+                        <button id="btn-pour" class="btn btn-fill">Pour Water</button>
+                        <button id="btn-drain" class="btn btn-ghost">Drain Water</button>
+                    </div>
+                </div>
+
+                <!-- Slider -->
+                <div class="ctrl-group">
+                    <div class="ctrl-row">
+                        <span class="ctrl-title">Manual Level</span>
+                        <output id="sim-value" class="slider-val">0%</output>
+                    </div>
+                    <input type="range" id="sim-slider" min="0" max="100" value="0" class="slider">
+                    <button id="btn-simulate" class="btn btn-tint btn-full">Set Level</button>
+                </div>
+
+                <!-- Test / Reset -->
+                <div class="btn-row">
+                    <button id="btn-test" class="btn btn-danger">Test Flood Alert</button>
+                    <button id="btn-reset" class="btn btn-ghost">Reset System</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══ Footer ═══ -->
+        <footer class="footer">
+            <span>Smart Flood Alert · Science Exhibition 2026</span>
+            <span>ESP32 · FastAPI · Meta Cloud API</span>
+            <span class="footer-credit">Made by Darsheel Shokeen</span>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
